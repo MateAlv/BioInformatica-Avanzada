@@ -1,3 +1,10 @@
+# 1A) Proteínas aleatorias
+#   I) Escriba un código que genere secuencias de proteínas al azar, de un largo preestablecido por el
+#    usuario. 
+#   II) Modifique el mismo tal que sea posible fijar la frecuencia o probabilidad de ocurrencia de cada 
+#   uno de los 20 aminoácidos.
+#   Ayuda: Puede definir un diccionario con frecuencias y usar numpy.random.choice().
+
 import random
 import numpy as np
 
@@ -24,12 +31,6 @@ AMINOACIDOS = {
     'V': 0.0695   # Valina 
 }
 
-# 1A) Proteínas aleatorias
-#   I) Escriba un código que genere secuencias de proteínas al azar, de un largo preestablecido por el
-#    usuario. 
-#   II) Modifique el mismo tal que sea posible fijar la frecuencia o probabilidad de ocurrencia de cada 
-#   uno de los 20 aminoácidos.
-#   Ayuda: Puede definir un diccionario con frecuencias y usar numpy.random.choice().
 
 def random_prot():
     largo_prot = int(input('Seleccione el largo de la proteína de salida:\n'))

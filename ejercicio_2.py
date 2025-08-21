@@ -1,6 +1,12 @@
 from Bio.Seq import Seq
 import random
+import numpy as np
 import matplotlib.pyplot as plt
+
+# 2A) Obtenga la reversa complementaria y compara las estadísticas de la misma con la original.
+# 2B) Traduzca la secuencia (obteniendo una secuencia proteica) y obtenga la distribución de los largos de los Marcos 
+# Abiertos de Lectura (ORF de Open Reading Frames). Compare los largos de los ORF con el largo de las proteinas analizadas 
+# previamente
 
 LARGO_SEQ = 999999
 DECIMALES_FREQ = 4
@@ -16,7 +22,6 @@ AMINOACIDOS = {
     "S": 0.0984,    "T": 0.0656,    "V": 0.0656,
     "W": 0.0164,    "Y": 0.0328
 }
-
 
 CODONES = {
     "ATA":"I", "ATC":"I", "ATT":"I", "ATG":"M",
@@ -56,7 +61,7 @@ def determinar_frecuencia(secuencia, simbolos):
     
     return frecuencias
 
-def main():
+def main_2a():
     seq_nucleotidos = seq_adn_random()
     seq_nuc_lista = list(seq_nucleotidos)
     seq_prot = ''
@@ -92,7 +97,7 @@ def main():
     plt.ylim(0, max(list(freq_amino.values()))* 1.1)
     plt.show()
     
-main()
+main_2a()
 
 # El gráfico nos muestra como a partir de secuencias de nucleótidos aleatorios, obviamente la frequencia de cada base
 # está perfectamente distribuída. Esto solamente evidencia el correcto funcionamiento de la librería random de python,
@@ -104,3 +109,50 @@ main()
 # Sin embargo, sí se puede extraer la conclusión de que los AA que surgen de varios codones distintos, van a producirse
 # más en los casos de mutaciones y deberían estar mayormente representados.
 # - Mate
+
+
+
+
+def obtener_largos_orfs(proteina):
+    orfs = []
+    i = 0
+    while i < len(proteina):
+        if proteina[i] == 'M': 
+            largo = 1
+            i += 1
+            while i < len(proteina) and proteina[i] != '*':
+                largo += 1
+                i += 1
+            orfs.append(largo)
+        else:
+            i += 1
+    return orfs
+
+def main_2b():
+    seq_nucleotidos = seq_adn_random()
+    seq_nuc_lista = list(seq_nucleotidos)
+    
+    marcos = []
+    for offset in range(3):
+        seq_prot = ''
+        for i in range(offset, len(seq_nuc_lista) - 2, 3):
+            codon = ''.join(seq_nuc_lista[i:i+3])
+            seq_prot += CODONES.get(codon, 'X')
+        marcos.append(seq_prot)
+    
+    orfs_todos = []
+    for proteina in marcos:
+        orfs = obtener_largos_orfs(proteina)
+        orfs_todos.extend(orfs)
+    
+    plt.figure(figsize=(12,5))
+    plt.hist(orfs_todos, bins=50, color='lightgreen', edgecolor='black')
+    plt.xlabel('Largo del ORF (número de aminoácidos)')
+    plt.ylabel('Cantidad de ORFs')
+    plt.title('Distribución de largos de ORFs en proteína traducida')
+    plt.show()
+    
+    print(f"Número total de ORFs encontrados: {len(orfs_todos)}")
+    print(f"Largo promedio de los ORFs: {np.mean(orfs_todos):.2f}")
+
+main_2b()
